@@ -6,7 +6,7 @@ const stripe = Stripe(process.env.STRIPE_SECRET);
 
 let paymentStatus = "OFF";
 
-app.use(express.json());
+// 🔥 ห้ามใช้ express.json() ก่อน webhook
 
 // Stripe Webhook
 app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
@@ -21,7 +21,8 @@ app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
       process.env.WEBHOOK_SECRET
     );
   } catch (err) {
-    return res.status(400).send(`Webhook Error`);
+    console.log("Webhook signature error:", err.message);
+    return res.status(400).send("Webhook Error");
   }
 
   if (event.type === "checkout.session.completed") {
@@ -32,12 +33,15 @@ app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
   res.json({ received: true });
 });
 
+// ✅ ค่อยใช้ json หลัง webhook
+app.use(express.json());
+
 // ESP32 check
 app.get("/check", (req, res) => {
   res.send(paymentStatus);
 });
 
-// Reset (optional)
+// Reset
 app.get("/reset", (req, res) => {
   paymentStatus = "OFF";
   res.send("RESET");
@@ -48,4 +52,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
-
