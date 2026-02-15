@@ -3,8 +3,9 @@ const express = require("express");
 const Stripe = require("stripe");
 
 const app = express();
-const stripe = Stripe(process.env.STRIPE_SECRET);
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
+app.use(express.json());
 let paymentStatus = "OFF";
 
 // ===============================
@@ -53,3 +54,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("🚀 Server running on port " + PORT);
 });
+
