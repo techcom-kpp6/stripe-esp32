@@ -4,13 +4,13 @@ const Stripe = require("stripe");
 
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-
-let paymentStatus = "OFF";
-
 // 👇 สำคัญ: ใส่ root route ก่อน
+
 app.get("/", (req, res) => {
   res.status(200).send("OK");
 });
+
+let paymentStatus = "OFF";
 
 // 👇 ห้ามใส่ express.json() ก่อน webhook
 app.post(
@@ -57,3 +57,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("🚀 Server running on port " + PORT);
 });
+
